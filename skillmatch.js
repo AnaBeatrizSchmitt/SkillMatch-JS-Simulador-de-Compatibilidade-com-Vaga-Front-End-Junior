@@ -85,7 +85,7 @@ const vagasCandidato = vagas.map(vaga =>
 
 /*----------------------------------------FUNÇÕES----------------------------------------*/
 
-const  classificacaoCompatibilidade(percentual) => {
+const  classificacaoCompatibilidade = (percentual) => {
     if (percentual >= 80 && percentual <= 100) {
         return 'Alta compatibilidade'
     } else if (percentual >= 50 && percentual <= 79) {
