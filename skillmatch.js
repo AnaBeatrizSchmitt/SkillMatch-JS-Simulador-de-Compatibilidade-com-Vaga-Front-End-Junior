@@ -38,22 +38,31 @@ class Vaga {
         this.modalidade = modalidade
         this.requisitos = requisitos
     }
+
+    resumoVaga() {
+        console.log(`VAGA\nId da vaga: ${this.id}\nEmpresa:${this.empresa}\nCargo: ${this.cargo}\nSalário: ${this.salario}\nModalidade: ${this.modalidade}\nRequisitos: ${this.requisitos.join(', ')}`)
+    }
 }
 
 class VagaCandidato extends Vaga {
-    nivel = ''
     candidato = ''
-    constructor(id, empresa, cargo, salario, modalidade, requisitos, candidato) {
+    habilidadesCandidato = []
+    constructor(id, empresa, cargo, salario, modalidade, requisitos, habilidadesCandidato) {
         super(id, empresa, cargo, salario, modalidade, requisitos)
-        this.requisitos = requisitos
-        this.candidato = candidato
+        this.habilidadesCandidato = habilidadesCandidato
+    }
+
+    nivelCompatibilidade() {
+        const habilidadesComum = this.requisitos.filter(req =>
+            this.habilidadesCandidato.includes(req)
+        );
+        return ((habilidadesComum.length / this.requisitos.length) * 100).toFixed(2);
     }
 }
 
 /*----------------------------------------INSTÂNCIAS----------------------------------------*/
 
 const vagas = []
-
 const candidato = new Candidato("Ana Beatriz Schmitt", 29, "Front-End", 12, "anab3.schmitt@gmail.com", ["Lógica de Programação", "CSS", "HTML", "JavaScript", "POO"]);
 
 const primeiraVaga = new Vaga(1, "Soluções Web", "Desenvolvedor Front-End Júnior", 3200, "Remoto", ["CSS", "HTML", "JavaScript", "POO", "Arrays"])
@@ -66,3 +75,31 @@ vagas.push(segundaVaga)
 vagas.push(terceiraVaga)
 vagas.push(quartaVaga)
 vagas.push(quintaVaga)
+
+const vagasCandidato = vagas.map(vaga =>
+    new VagaCandidato(
+        vaga.id, vaga.empresa, vaga.cargo,
+        vaga.salario, vaga.modalidade, vaga.requisitos, candidato.habilidades
+    )
+);
+
+/*----------------------------------------FUNÇÕES----------------------------------------*/
+
+const  classificacaoCompatibilidade(percentual) => {
+    if (percentual >= 80 && percentual <= 100) {
+        return 'Alta compatibilidade'
+    } else if (percentual >= 50 && percentual <= 79) {
+        return 'Média compatibilidade'
+    } else if (percentual >= 0 && percentual <= 49) {
+        return 'Baixa compatibilidade'
+    }
+}
+
+function resumoCompatibilidade() {
+    vagasCandidato.forEach(vaga => {
+        console.log('-------------------')
+        console.log(``)
+        console.log('-------------------')
+    });
+}
+
