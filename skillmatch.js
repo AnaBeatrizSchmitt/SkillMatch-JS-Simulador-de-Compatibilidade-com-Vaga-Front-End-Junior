@@ -58,6 +58,35 @@ class VagaCandidato extends Vaga {
         );
         return ((habilidadesComum.length / this.requisitos.length) * 100).toFixed(2);
     }
+
+    classificacaoCompatibilidade() {
+        const percentual = this.nivelCompatibilidade()
+        if (percentual >= 80 && percentual <= 100) {
+            return 'Alta compatibilidade'
+        } else if (percentual >= 50 && percentual <= 79) {
+            return 'Média compatibilidade'
+        } else if (percentual >= 0 && percentual <= 49) {
+            return 'Baixa compatibilidade'
+        }
+    }
+
+    habilidadesFaltantes() {
+        const habilidadesFaltantes = this.requisitos.reduce((contador, req) => {
+            if (!this.habilidadesCandidato.includes(req)) {
+                contador.push(req)
+            }
+            return contador
+        }, [])
+        return habilidadesFaltantes
+    }
+
+    vagaMaisCompativel() {
+
+    }
+
+    recomendacaoEstudo() {
+
+    }
 }
 
 /*----------------------------------------INSTÂNCIAS----------------------------------------*/
@@ -85,21 +114,9 @@ const vagasCandidato = vagas.map(vaga =>
 
 /*----------------------------------------FUNÇÕES----------------------------------------*/
 
-const  classificacaoCompatibilidade = (percentual) => {
-    if (percentual >= 80 && percentual <= 100) {
-        return 'Alta compatibilidade'
-    } else if (percentual >= 50 && percentual <= 79) {
-        return 'Média compatibilidade'
-    } else if (percentual >= 0 && percentual <= 49) {
-        return 'Baixa compatibilidade'
-    }
-}
 
-function resumoCompatibilidade() {
-    vagasCandidato.forEach(vaga => {
-        console.log('-------------------')
-        console.log(``)
-        console.log('-------------------')
-    });
-}
+
+vagasCandidato.forEach(element => {
+    console.log(element.cargo + " - " + element.habilidadesFaltantes())
+});
 
