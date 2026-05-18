@@ -18,7 +18,7 @@ class Candidato {
     }
 
     apresentacaoCandidato() {
-        console.log(`CANTIDATO\nNome: ${this.nome}\nIdade:${this.idade}\nÁrea: ${this.area}\nMeses de experiência: ${this.experienciaMeses}\nEmail: ${this.email}\nHabilidades: ${this.habilidades.join(', ')}`)
+        console.log(`Nome: ${this.nome}\nIdade:${this.idade}\nÁrea: ${this.area}\nMeses de experiência: ${this.experienciaMeses}\nEmail: ${this.email}\nHabilidades: ${this.habilidades.join(', ')}`)
     }
 }
 
@@ -39,9 +39,6 @@ class Vaga {
         this.requisitos = requisitos
     }
 
-    resumoVaga() {
-        console.log(`VAGA\nId da vaga: ${this.id}\nEmpresa:${this.empresa}\nCargo: ${this.cargo}\nSalário: ${this.salario}\nModalidade: ${this.modalidade}\nRequisitos: ${this.requisitos.join(', ')}`)
-    }
 }
 
 class VagaCandidato extends Vaga {
@@ -60,7 +57,7 @@ class VagaCandidato extends Vaga {
     }
 
     classificacaoCompatibilidade() {
-        const percentual = this.nivelCompatibilidade()
+        const percentual = parseFloat(this.nivelCompatibilidade())
         if (percentual >= 80 && percentual <= 100) {
             return 'Alta compatibilidade'
         } else if (percentual >= 50 && percentual <= 79) {
@@ -68,6 +65,16 @@ class VagaCandidato extends Vaga {
         } else if (percentual >= 0 && percentual <= 49) {
             return 'Baixa compatibilidade'
         }
+    }
+
+    habilidadesEncontradas() {
+        const habilidadesEncontradas = this.requisitos.reduce((contador, req) => {
+            if (this.habilidadesCandidato.includes(req)) {
+                contador.push(req)
+            }
+            return contador
+        }, [])
+        return habilidadesEncontradas
     }
 
     habilidadesFaltantes() {
@@ -80,13 +87,6 @@ class VagaCandidato extends Vaga {
         return habilidadesFaltantes
     }
 
-    vagaMaisCompativel() {
-
-    }
-
-    recomendacaoEstudo() {
-
-    }
 }
 
 /*----------------------------------------INSTÂNCIAS----------------------------------------*/
@@ -106,17 +106,79 @@ vagas.push(quartaVaga)
 vagas.push(quintaVaga)
 
 const vagasCandidato = vagas.map(vaga =>
-    new VagaCandidato(
-        vaga.id, vaga.empresa, vaga.cargo,
-        vaga.salario, vaga.modalidade, vaga.requisitos, candidato.habilidades
+    new VagaCandidato(vaga.id, vaga.empresa, vaga.cargo, vaga.salario, vaga.modalidade, vaga.requisitos, candidato.habilidades
     )
 );
 
 /*----------------------------------------FUNÇÕES----------------------------------------*/
 
+function vagaMaisCompativel(vagas) {
+    return vagas.reduce((maior, atual) => parseFloat(atual.nivelCompatibilidade()) > parseFloat(maior.nivelCompatibilidade()) ? atual : maior)
+}
 
+function recomendacaoEstudo(vagas) {
+    const resultado = []
+    const habilidadesMenosVistas = vagasCandidato.map(vaga => {
+        return vaga.habilidadesFaltantes()
+    }).flat();
+    habilidadesMenosVistas.forEach(habilidade => {
+        if (!resultado.includes(habilidade) && habilidade) {
+            resultado.push(habilidade)
+        }
+    });
+    return resultado
+}
 
-vagasCandidato.forEach(element => {
-    console.log(element.cargo + " - " + element.habilidadesFaltantes())
-});
+function informativoEstudo(vagasCandidato) {
+    console.log('')
+    console.log('RECOMENDAÇÃO DE ESTUDO')
+    console.log('Os requisitos ' + recomendacaoEstudo(vagasCandidato).join(', ') + ' não foram encontrados em sua lista de habilidades. Priorize aprofundar os estudos nestes assuntos para as próximas vagas.')
+    console.log('')
+    console.log('-------------------')
+}
+
+function contadosVagasAnalisadas() {
+    let total = 0
+    return function () {
+        total++;
+        return total;
+    }
+}
+
+function resumoVagas(candidato, callback) {
+    console.log('')
+    console.log('RESULTADO DA ANÁLISE DE VAGAS')
+    console.log('')
+    console.log('CANDIDATO')
+    console.log('')
+    candidato.apresentacaoCandidato()
+    console.log('')
+    console.log('VAGAS')
+    console.log('')
+    const contarVagas = contadosVagasAnalisadas()
+    let contador = 0
+    vagasCandidato.forEach(vaga => {
+        console.log('-------------------')
+        console.log('Empresa: ' + vaga.empresa)
+        console.log('Cargo: ' + vaga.cargo)
+        console.log('Salário: R$' + vaga.salario)
+        console.log('Habilidades encontradas: ' + vaga.habilidadesEncontradas().join(', '))
+        console.log('Habilidades faltantes: ' + vaga.habilidadesFaltantes().join(', '))
+        console.log('Nível de compatibilidade: ' + vaga.nivelCompatibilidade() + '%')
+        console.log('Classificação: ' + vaga.classificacaoCompatibilidade())
+        contador = contarVagas()
+    });
+    console.log('')
+    console.log('Vagas analisadas: ' + contador)
+    console.log('-------------------')
+    console.log('')
+    console.log('VAGA COM MAIOR COMPATIBILIDADE')
+    const vagaComMaiorCompatibilidade = vagaMaisCompativel(vagasCandidato)
+    console.log(vagaComMaiorCompatibilidade.cargo + ' - ' + vagaComMaiorCompatibilidade.nivelCompatibilidade() + '% de compatibilidade')
+    console.log('')
+    console.log('-------------------')
+    callback(vagasCandidato)
+}
+
+resumoVagas(candidato, informativoEstudo)
 
