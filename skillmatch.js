@@ -196,5 +196,3 @@ async function iniciarAnaliseVagas() {
 }
 
 iniciarAnaliseVagas()
-
-
