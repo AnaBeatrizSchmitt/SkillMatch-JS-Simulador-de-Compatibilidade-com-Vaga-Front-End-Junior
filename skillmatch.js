@@ -180,5 +180,21 @@ function resumoVagas(candidato, callback) {
     callback(vagasCandidato)
 }
 
-resumoVagas(candidato, informativoEstudo)
+function buscarVagas() {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(vagas)
+        }, 2000);
+    });
+}
+
+async function iniciarAnaliseVagas() {
+    console.log('Carregando as vagas, aguarde...')
+    const vagasCarregadas = await buscarVagas()
+    console.log('Vagas carregadas e analisadas com sucesso!')
+    resumoVagas(candidato, informativoEstudo)
+}
+
+iniciarAnaliseVagas()
+
 
