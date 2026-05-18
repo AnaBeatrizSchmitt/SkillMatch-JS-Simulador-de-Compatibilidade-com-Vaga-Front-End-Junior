@@ -22,6 +22,7 @@ No final mostrará um resumo com todas as informações citadas acima.
 ## Objetivo
 
 Desenvolver os conhecimentos do estudante sobre os assuntos praticados ao decorrer do Módulo 1, sendo estes:
+
 - Lógica de programação;
 - JavaScript;
 - Kanban;
