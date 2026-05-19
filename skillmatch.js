@@ -171,7 +171,7 @@ function resumoVagas(candidato, callback, vagas) {
         console.log('Cargo: ' + vaga.cargo)
         console.log('Salário: R$' + vaga.salario)
         console.log('Habilidades encontradas: ' + vaga.habilidadesEncontradas().join(', '))
-        console.log('Habilidades faltantes: ' + vaga.habilidadesFaltantes().join(', '))
+        console.log(vaga.habilidadesFaltantes().length === 0 ? 'O candidato possui todas as habilidades requisitas nas vagas. Continue assim!' : 'Habilidades faltantes: ' + vaga.habilidadesFaltantes().join(', '))
         console.log('Nível de compatibilidade: ' + vaga.nivelCompatibilidade() + '%')
         console.log('Classificação: ' + vaga.classificacaoCompatibilidade())
         contador = contarVagas()
