@@ -118,7 +118,7 @@ function vagaMaisCompativel(vagas) {
 
 function recomendacaoEstudo(vagas) {
     const resultado = []
-    const habilidadesMenosVistas = vagasCandidato.map(vaga => {
+    const habilidadesMenosVistas = vagas.map(vaga => {
         return vaga.habilidadesFaltantes()
     }).flat();
     habilidadesMenosVistas.forEach(habilidade => {
@@ -129,15 +129,23 @@ function recomendacaoEstudo(vagas) {
     return resultado
 }
 
-function informativoEstudo(vagasCandidato) {
-    console.log('')
-    console.log('RECOMENDAÇÃO DE ESTUDO')
-    console.log('Os requisitos ' + recomendacaoEstudo(vagasCandidato).join(', ') + ' não foram encontrados em sua lista de habilidades. Priorize aprofundar os estudos nestes assuntos para as próximas vagas.')
-    console.log('')
-    console.log('-------------------')
+function informativoEstudo(vagas) {
+    if (recomendacaoEstudo(vagas).length === 0) {
+        console.log('')
+        console.log('RECOMENDAÇÃO DE ESTUDO')
+        console.log('O candidato possui todas as habilidades requisitas nas vagas. Continue assim!')
+        console.log('')
+        console.log('-------------------')
+    } else {
+        console.log('')
+        console.log('RECOMENDAÇÃO DE ESTUDO')
+        console.log('Os requisitos ' + recomendacaoEstudo(vagas).join(', ') + ' não foram encontrados em sua lista de habilidades. Priorize aprofundar os estudos nestes assuntos para as próximas vagas.')
+        console.log('')
+        console.log('-------------------')
+    }
 }
 
-function contadosVagasAnalisadas() {
+function contadorVagasAnalisadas() {
     let total = 0
     return function () {
         total++;
@@ -145,7 +153,7 @@ function contadosVagasAnalisadas() {
     }
 }
 
-function resumoVagas(candidato, callback) {
+function resumoVagas(candidato, callback, vagas) {
     console.log('')
     console.log('RESULTADO DA ANÁLISE DE VAGAS')
     console.log('')
@@ -155,9 +163,9 @@ function resumoVagas(candidato, callback) {
     console.log('')
     console.log('VAGAS')
     console.log('')
-    const contarVagas = contadosVagasAnalisadas()
+    const contarVagas = contadorVagasAnalisadas()
     let contador = 0
-    vagasCandidato.forEach(vaga => {
+    vagas.forEach(vaga => {
         console.log('-------------------')
         console.log('Empresa: ' + vaga.empresa)
         console.log('Cargo: ' + vaga.cargo)
@@ -173,11 +181,11 @@ function resumoVagas(candidato, callback) {
     console.log('-------------------')
     console.log('')
     console.log('VAGA COM MAIOR COMPATIBILIDADE')
-    const vagaComMaiorCompatibilidade = vagaMaisCompativel(vagasCandidato)
+    const vagaComMaiorCompatibilidade = vagaMaisCompativel(vagas)
     console.log(vagaComMaiorCompatibilidade.cargo + ' - ' + vagaComMaiorCompatibilidade.nivelCompatibilidade() + '% de compatibilidade')
     console.log('')
     console.log('-------------------')
-    callback(vagasCandidato)
+    callback(vagas)
 }
 
 function buscarVagas() {
@@ -192,7 +200,7 @@ async function iniciarAnaliseVagas() {
     console.log('Carregando as vagas, aguarde...')
     const vagasCarregadas = await buscarVagas()
     console.log('Vagas carregadas e analisadas com sucesso!')
-    resumoVagas(candidato, informativoEstudo)
+    resumoVagas(candidato, informativoEstudo, vagasCandidato)
 }
 
 iniciarAnaliseVagas()
